@@ -2,7 +2,6 @@ import axios from "axios";
 import * as alertService from "../services/alert.service.js";
 import { onlineUsers } from "../socket/socket.js";
 
-
 export const createSOSController = async (req, res) => {
   try {
     const { latitude, longitude } = req.body;
@@ -14,42 +13,54 @@ export const createSOSController = async (req, res) => {
       });
     }
 
-    const coordinates = [longitude, latitude]; // GeoJSON order: [lng, lat]
+    const coordinates = [longitude, latitude]; 
+    const userToken = req.headers.authorization?.split(" ")[1] || req.cookies?.token;
 
-    const { alert, nearbyVolunteers } = await alertService.createAlert(
-      req.user._id,
-      coordinates
-    );
+    const [{ alert, nearbyVolunteers }, userProfile] = await Promise.all([
+      alertService.createAlert(req.user._id, coordinates),
+      axios
+        .get(`${process.env.AUTH_SERVICE_URL}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${userToken}` },
+        })
+        .then((r) => r.data.user)
+        .catch((err) => {
+          console.error("Failed to fetch user profile for SOS:", err.message);
+          return null;
+        }),
+    ]);
+
+    const userName = userProfile
+      ? `${userProfile.fullname.firstname} ${userProfile.fullname.lastname || ""}`.trim()
+      : "Someone";
+
     console.log("==================================");
-console.log("SOS Created:", alert._id);
-console.log("Nearby Volunteers:", nearbyVolunteers.length);
-console.log(nearbyVolunteers);
-console.log("Online Users:", [...onlineUsers.entries()]);
-console.log("==================================");
+    console.log("SOS Created:", alert._id);
+    console.log("Triggered by:", userName);
+    console.log("Nearby Volunteers:", nearbyVolunteers.length);
+    console.log(nearbyVolunteers);
+    console.log("Online Users:", [...onlineUsers.entries()]);
+    console.log("==================================");
 
     const io = req.app.get("io");
 
     nearbyVolunteers.forEach((volunteer) => {
-  const socketId = onlineUsers.get(volunteer.authUserId.toString());
+      const socketId = onlineUsers.get(volunteer.authUserId.toString());
 
-  console.log(
-    "Volunteer ID:",
-    volunteer.authUserId.toString()
-  );
+      console.log("Volunteer ID:", volunteer.authUserId.toString());
+      console.log("Socket ID:", socketId);
 
-  console.log("Socket ID:", socketId);
+      if (socketId) {
+        console.log("Sending SOS to volunteer...");
 
-  if (socketId) {
-    console.log("Sending SOS to volunteer...");
-
-    io.to(socketId).emit("sos:new", {
-      alertId: alert._id,
-      location: alert.location,
-      createdAt: alert.createdAt,
+        io.to(socketId).emit("sos:new", {
+          alertId: alert._id,
+          location: alert.location,
+          createdAt: alert.createdAt,
+          userName,
+          userPhone: userProfile?.phone || "",
+        });
+      }
     });
-  }
-});
-    const userToken = req.headers.authorization?.split(" ")[1] || req.cookies?.token;
 
     axios
       .post(

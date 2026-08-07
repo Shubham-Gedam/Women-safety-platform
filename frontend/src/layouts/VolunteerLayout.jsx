@@ -10,54 +10,58 @@ export default function VolunteerLayout() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-  const socket = connectSocket();
+  useEffect(() => {
+    const socket = connectSocket();
 
-  if (!socket) return;
+    if (!socket) return;
 
-  socket.on("connect", () => {
-    console.log("✅ Volunteer Socket Connected:", socket.id);
-  });
+    socket.on("connect", () => {
+      console.log("✅ Volunteer Socket Connected:", socket.id);
+    });
 
-  socket.on("connect_error", (err) => {
-    console.log("❌ Socket Error:", err.message);
-  });
+    socket.on("connect_error", (err) => {
+      console.log("❌ Socket Error:", err.message);
+    });
 
-  return () => {
-    disconnectSocket();
-  };
-}, []);
-useEffect(() => {
-  console.log("VolunteerLayout Mounted");
+    return () => {
+      disconnectSocket();
+    };
+  }, []);
+  useEffect(() => {
+    console.log("VolunteerLayout Mounted");
 
-  async function fetchUser() {
-    console.log("fetchUser started");
+    async function fetchUser() {
+      console.log("fetchUser started");
 
-    try {
-      const data = await getMe();
-      console.log("getMe response:", data);
+      try {
+        const data = await getMe();
+        console.log("getMe response:", data);
 
-      setUser(data.user || data);
-    } catch (err) {
-      console.error("fetchUser error:", err);
-    } finally {
-      console.log("loading false");
-      setLoading(false);
+        setUser(data.user || data);
+      } catch (err) {
+        console.error("fetchUser error:", err);
+      } finally {
+        console.log("loading false");
+        setLoading(false);
+      }
     }
-  }
 
-  fetchUser();
-}, []);
+    fetchUser();
+  }, []);
   if (loading) {
     return <Loader fullScreen text="Loading responder portal..." />;
   }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
-      <Navbar 
-        role={user?.role || "volunteer"} 
-        userName={user?.fullName || user?.name || "Volunteer"} 
-        notificationCount={0} 
+      <Navbar
+        userName={
+          user?.fullname
+            ? `${user.fullname.firstname} ${user.fullname.lastname || ""}`.trim()
+            : "Volunteer"
+        }
+        notificationCount={0}
+        navLinks={[]}
       />
       <main className="flex-1">
         <Outlet context={{ user }} />

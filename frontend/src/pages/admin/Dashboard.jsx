@@ -5,11 +5,11 @@ import AlertsTable from "../../components/admin/AlertsTable";
 import UsersTable from "../../components/admin/UsersTable";
 import VolunteersTable from "../../components/admin/VolunteersTable";
 import SafeZones from "../../components/admin/SafeZones";
-import { getUsers, getVolunteers, getAllAlerts, verifyVolunteer } from "../../services/admin.service";
+import {getUsers,getVolunteers,getAllAlerts,verifyVolunteer,} from "../../services/admin.service";
 
 function timeAgo(dateString) {
   if (!dateString) return "—";
-  const mins = Math.floor((Date.now() - new Date(dateString).getTime()) / 60000);
+  const mins = Math.floor((Date.now() - new Date(dateString).getTime()) / 60000,);
   if (isNaN(mins) || mins < 1) return "just now";
   if (mins < 60) return `${mins} mins ago`;
   const hours = Math.floor(mins / 60);
@@ -69,10 +69,12 @@ export default function AdminDashboard() {
     users.map((u) => [
       u._id,
       `${u.fullname?.firstname || "User"} ${u.fullname?.lastname || ""}`.trim(),
-    ])
+    ]),
   );
 
-  const resolvedAlerts = alerts.filter((a) => a.status === "resolved" && a.resolvedAt);
+  const resolvedAlerts = alerts.filter(
+    (a) => a.status === "resolved" && a.resolvedAt,
+  );
   const avgResolutionMins = resolvedAlerts.length
     ? (
         resolvedAlerts.reduce((sum, a) => {
@@ -84,7 +86,9 @@ export default function AdminDashboard() {
 
   const stats = {
     totalUsers: users.length,
-    activeAlerts: alerts.filter((a) => a.status === "pending" || a.status === "accepted").length,
+    activeAlerts: alerts.filter(
+      (a) => a.status === "pending" || a.status === "accepted",
+    ).length,
     volunteers: volunteers.length,
     avgResolution: avgResolutionMins,
   };
@@ -94,11 +98,17 @@ export default function AdminDashboard() {
     user: userMap[a.userId] || "Unknown",
     time: timeAgo(a.createdAt),
     status: statusLabels[a.status] || a.status,
-    responder: a.assignedVolunteerId ? userMap[a.assignedVolunteerId] || "Assigned" : "—",
+    responder: a.assignedVolunteerId
+      ? userMap[a.assignedVolunteerId] || "Assigned"
+      : "—",
   }));
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64 text-zinc-400">Loading dashboard...</div>;
+    return (
+      <div className="flex items-center justify-center h-64 text-zinc-400">
+        Loading dashboard...
+      </div>
+    );
   }
 
   return (
@@ -106,8 +116,12 @@ export default function AdminDashboard() {
       {/* Top Header & Stats Cards (Persistent on all tabs) */}
       <div className="flex justify-between items-center border-b border-zinc-800 pb-4">
         <div>
-          <h1 className="text-xl font-bold text-white">System Command Center</h1>
-          <p className="text-xs text-zinc-500">Real-time oversight and responder management</p>
+          <h1 className="text-xl font-bold text-white">
+            System Command Center
+          </h1>
+          <p className="text-xs text-zinc-500">
+            Real-time oversight and responder management
+          </p>
         </div>
         <span className="text-xs bg-red-500/10 border border-red-500/20 text-red-400 px-3 py-1 rounded-lg font-medium">
           Live Monitoring
@@ -117,14 +131,16 @@ export default function AdminDashboard() {
       <DashboardStats stats={stats} />
 
       {/* Tab Specific Content */}
-      {(activeTab === "dashboard" || activeTab === "alerts" || activeTab === "incidents" || activeTab === "incident-history") && (
-        <AlertsTable alerts={alertLogs} />
-      )}
+      {(activeTab === "dashboard" ||
+        activeTab === "alerts" ||
+        activeTab === "incidents" ||
+        activeTab === "incident-history") && <AlertsTable alerts={alertLogs} />}
 
-      {activeTab === "users" && <UsersTable users={users} />}
-
-      {activeTab === "volunteers" && (
-        <VolunteersTable volunteers={volunteers} onVerify={handleVerify} />
+      {activeTab === "users" && (
+        <div className="space-y-6">
+          <UsersTable users={users} />
+          <VolunteersTable volunteers={volunteers} onVerify={handleVerify} />
+        </div>
       )}
 
       {(activeTab === "zones" || activeTab === "safe-zones") && (

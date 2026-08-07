@@ -30,8 +30,8 @@ export default function AddSafeZoneModal({ isOpen, onClose, onZoneAdded }) {
       location: {
         type: "Point",
         coordinates: [
-          parseFloat(formData.longitude), // GeoJSON mein Longitude pehle aata hai
-          parseFloat(formData.latitude),  // Latitude baad mein
+          parseFloat(formData.longitude), 
+          parseFloat(formData.latitude),
         ],
       },
     };
@@ -78,22 +78,30 @@ export default function AddSafeZoneModal({ isOpen, onClose, onZoneAdded }) {
           )}
 
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1">Place / Center Name</label>
+            <label className="block text-xs font-medium text-zinc-400 mb-1">
+              Place / Center Name
+            </label>
             <input
               type="text"
               required
               placeholder="e.g. Central Police Station"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1">Type</label>
+            <label className="block text-xs font-medium text-zinc-400 mb-1">
+              Type
+            </label>
             <select
               value={formData.type}
-              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, type: e.target.value })
+              }
               className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500"
             >
               <option value="police_station">Police Station</option>
@@ -105,13 +113,17 @@ export default function AddSafeZoneModal({ isOpen, onClose, onZoneAdded }) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1">Address</label>
+            <label className="block text-xs font-medium text-zinc-400 mb-1">
+              Address
+            </label>
             <textarea
               required
               rows={2}
               placeholder="Full address of the location..."
               value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, address: e.target.value })
+              }
               className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500"
             />
           </div>
@@ -119,38 +131,50 @@ export default function AddSafeZoneModal({ isOpen, onClose, onZoneAdded }) {
           {/* Coordinates (Latitude & Longitude) */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-1">Latitude</label>
+              <label className="block text-xs font-medium text-zinc-400 mb-1">
+                Latitude
+              </label>
               <input
                 type="number"
                 step="any"
                 required
                 placeholder="e.g. 18.5204"
                 value={formData.latitude}
-                onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, latitude: e.target.value })
+                }
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-1">Longitude</label>
+              <label className="block text-xs font-medium text-zinc-400 mb-1">
+                Longitude
+              </label>
               <input
                 type="number"
                 step="any"
                 required
                 placeholder="e.g. 73.8567"
                 value={formData.longitude}
-                onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, longitude: e.target.value })
+                }
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1">Contact Number</label>
+            <label className="block text-xs font-medium text-zinc-400 mb-1">
+              Contact Number
+            </label>
             <input
               type="text"
               placeholder="+91 9876543210"
               value={formData.contactNumber}
-              onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, contactNumber: e.target.value })
+              }
               className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500"
             />
           </div>

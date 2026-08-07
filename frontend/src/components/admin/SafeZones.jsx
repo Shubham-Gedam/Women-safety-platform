@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { MapPinned, Phone, Plus } from "lucide-react";
 import { getSafetyZones } from "../../services/admin.service";
-import AddSafeZoneModal from "./AddSafeZoneModal"; 
+import { useAuth } from "../../context/AuthContext";
+import AddSafeZoneModal from "./AddSafeZoneModal";
 
 const typeLabels = {
   police_station: "Police Station",
@@ -11,7 +12,10 @@ const typeLabels = {
   other: "Other",
 };
 
-export default function SafeZones({ role = "user" }) {
+export default function SafeZones() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
+
   const [zones, setZones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,15 +35,13 @@ export default function SafeZones({ role = "user" }) {
 
   return (
     <div className="p-6 space-y-4">
-      {/* Header section with Add button for Admin */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-white">Safe Zones</h1>
           <p className="text-xs text-zinc-500">Police stations, hospitals, and help centers.</p>
         </div>
 
-        {/* Button tabhi dikhega agar Logged-in user ADMIN hai */}
-        {role === "admin" && (
+        {isAdmin && (
           <button
             onClick={() => setIsModalOpen(true)}
             className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white text-xs font-medium px-4 py-2 rounded-lg transition-colors"
@@ -79,12 +81,13 @@ export default function SafeZones({ role = "user" }) {
         </div>
       )}
 
-      {/* Admin Modal */}
-      <AddSafeZoneModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onZoneAdded={handleZoneAdded}
-      />
+      {isAdmin && (
+        <AddSafeZoneModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onZoneAdded={handleZoneAdded}
+        />
+      )}
     </div>
   );
 }

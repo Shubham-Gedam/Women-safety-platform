@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import AlertList from "../../components/volunteer/AlertList";
 import ActiveMission from "../../components/volunteer/ActiveMission";
 import LiveSafetyMap from "../../components/user/LiveSafetyMap";
-import { getSocket } from "../../services/socket";
+import { connectSocket } from "../../services/socket";
 
 export default function VolunteerDashboard() {
   const [alerts, setAlerts] = useState([]);
@@ -26,7 +26,7 @@ export default function VolunteerDashboard() {
           lng: longitude,
         });
 
-        const socket = getSocket();
+        const socket = connectSocket();
         if (socket) {
           socket.emit("location:update", {
             latitude,
@@ -47,7 +47,7 @@ export default function VolunteerDashboard() {
 
   // 2. Real-Time Socket Listener for User Emergency SOS
   useEffect(() => {
-    const socket = getSocket();
+    const socket = connectSocket();
     if (!socket) return;
 
     socket.on("sos:new", (data) => {

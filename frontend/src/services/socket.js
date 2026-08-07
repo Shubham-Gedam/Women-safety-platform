@@ -6,6 +6,10 @@ export function connectSocket() {
   const token = localStorage.getItem("token");
   if (!token) return null;
 
+  if (socket) {
+    return socket; 
+  }
+
   socket = io("http://localhost:8000", {
     auth: { token },
     transports: ["websocket"],
