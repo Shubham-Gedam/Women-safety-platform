@@ -10,7 +10,7 @@ export function connectSocket() {
     return socket; 
   }
 
-  socket = io("http://localhost:8000", {
+  socket = io("https://kavach-api-gateway-service.onrender.com", {
     auth: { token },
     transports: ["websocket"],
   });
