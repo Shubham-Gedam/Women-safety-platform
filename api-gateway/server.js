@@ -3,11 +3,11 @@ dotenv.config();
 
 import { app, socketProxy } from "./src/app.js";
 
+const PORT = process.env.PORT || 8000;
 
-
-const server = app.listen(8000, () => {
-  console.log(`API Gateway running on 8000`);
+const server = app.listen(PORT, () => {
+  console.log(`API Gateway running on ${PORT}`);
 });
 
-// WebSocket upgrade requests ko manually socket proxy tak route karna padta hai
+
 server.on("upgrade", socketProxy.upgrade);
