@@ -12,11 +12,31 @@ app.use(cors());
 const authProxy = createProxyMiddleware({
   target: process.env.AUTH_SERVICE_URL,
   changeOrigin: true,
-  pathRewrite: (path) => `/api/auth${path}`,
+
+  pathRewrite: {
+    "^/api/auth": "/api/auth",
+  },
+
   on: {
+    proxyReq: (proxyReq, req) => {
+      console.log(
+        "➡️ AUTH REQUEST:",
+        req.method,
+        req.originalUrl,
+        "→",
+        process.env.AUTH_SERVICE_URL
+      );
+    },
+
     error: (err, req, res) => {
-      console.error("Auth service error:", err.message);
-      res.status(502).json({ message: "Auth service unavailable" });
+      console.error("❌ Auth service error:", err.message);
+
+      if (!res.headersSent) {
+        res.status(502).json({
+          status: "failed",
+          message: "Auth service unavailable",
+        });
+      }
     },
   },
 });
@@ -24,11 +44,25 @@ const authProxy = createProxyMiddleware({
 const userProxy = createProxyMiddleware({
   target: process.env.USER_SERVICE_URL,
   changeOrigin: true,
-  pathRewrite: (path) => `/api/users${path}`,
+  pathRewrite: {
+    "^/api/users": "/api/users",
+  },
   on: {
+    proxyReq: (proxyReq, req) => {
+      console.log(
+        "➡️ USER REQUEST:",
+        req.method,
+        req.originalUrl,
+        "→",
+        process.env.USER_SERVICE_URL
+      );
+    },
     error: (err, req, res) => {
-      console.error("User service error:", err.message);
-      res.status(502).json({ message: "User service unavailable" });
+      console.error("❌ User service error:", err.message);
+      res.status(502).json({
+        status: "failed",
+        message: "User service unavailable",
+      });
     },
   },
 });
@@ -36,11 +70,25 @@ const userProxy = createProxyMiddleware({
 const alertProxy = createProxyMiddleware({
   target: process.env.ALERT_SERVICE_URL,
   changeOrigin: true,
-  pathRewrite: (path) => `/api/alerts${path}`,
+  pathRewrite: {
+    "^/api/alerts": "/api/alerts",
+  },
   on: {
+    proxyReq: (proxyReq, req) => {
+      console.log(
+        "➡️ ALERT REQUEST:",
+        req.method,
+        req.originalUrl,
+        "→",
+        process.env.ALERT_SERVICE_URL
+      );
+    },
     error: (err, req, res) => {
-      console.error("Alert service error:", err.message);
-      res.status(502).json({ message: "Alert service unavailable" });
+      console.error("❌ Alert service error:", err.message);
+      res.status(502).json({
+        status: "failed",
+        message: "Alert service unavailable",
+      });
     },
   },
 });
@@ -48,7 +96,9 @@ const alertProxy = createProxyMiddleware({
 const adminProxy = createProxyMiddleware({
   target: process.env.ADMIN_SERVICE_URL,
   changeOrigin: true,
-  pathRewrite: (path) => `/api/admin${path}`,
+  pathRewrite: {
+    "^/api/admin": "/api/admin",
+  },
   on: {
     error: (err, req, res) => {
       console.error("Admin service error:", err.message);
@@ -62,7 +112,9 @@ const socketProxy = createProxyMiddleware({
   target: process.env.ALERT_SERVICE_URL,
   changeOrigin: true,
   ws: true,
-  pathRewrite: (path) => `/socket.io${path}`,
+  pathRewrite: {
+    "^/socket.io": "/socket.io",
+  },
 });
 
 app.use("/api/auth", authProxy);
