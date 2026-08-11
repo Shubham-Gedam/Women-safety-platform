@@ -12,20 +12,42 @@ app.use(cors());
 const authProxy = createProxyMiddleware({
   target: process.env.AUTH_SERVICE_URL,
   changeOrigin: true,
+
   pathRewrite: (path) => `/api/auth${path}`,
+
   on: {
     proxyReq: (proxyReq, req) => {
-      console.log("➡️ AUTH REQUEST:", req.method, req.originalUrl, "→", process.env.AUTH_SERVICE_URL);
+      console.log(
+        "➡️ AUTH REQUEST:",
+        req.method,
+        req.originalUrl,
+        "→",
+        `${process.env.AUTH_SERVICE_URL}/api/auth${req.url}`
+      );
     },
+
+    proxyRes: (proxyRes, req) => {
+      console.log(
+        "⬅️ AUTH RESPONSE:",
+        proxyRes.statusCode,
+        req.method,
+        req.originalUrl
+      );
+    },
+
     error: (err, req, res) => {
-      console.error("❌ Auth service error:", err.message);
+      console.error("❌ AUTH PROXY ERROR:", err.message);
+
       if (!res.headersSent) {
-        res.status(502).json({ status: "failed", message: "Auth service unavailable" });
+        res.status(502).json({
+          status: "failed",
+          message: "Auth service unavailable",
+          error: err.message,
+        });
       }
     },
   },
 });
-
 const userProxy = createProxyMiddleware({
   target: process.env.USER_SERVICE_URL,
   changeOrigin: true,
