@@ -5,6 +5,9 @@ import app from "./src/app.js";
 
 
 
-app.listen(3003, () => {
-  console.log(`Notification server is running on port 3003`);
+const PORT = process.env.PORT || 3003;
+
+
+app.listen(PORT, () => {
+  console.log(`Notification server is running on port ${PORT}`);
 });

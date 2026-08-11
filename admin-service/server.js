@@ -7,7 +7,9 @@ import connectToDB from "./src/db/db.js";
 connectToDB();
 
 
+const PORT = process.env.PORT || 3004;
 
-app.listen(3004, () => {
-  console.log(`Admin server is running on port 3004`);
+
+app.listen(PORT, () => {
+  console.log(`Admin server is running on port ${PORT}`);
 });

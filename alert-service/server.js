@@ -22,6 +22,9 @@ app.set("io", io);
 
 
 
-server.listen(3002, () => {
-  console.log(`Alert server is running on 3002`);
+const PORT = process.env.PORT || 3002;
+
+
+server.listen(PORT, () => {
+  console.log(`Alert server is running on port ${PORT}`);
 });
