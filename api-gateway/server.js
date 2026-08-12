@@ -5,7 +5,7 @@ import { app, socketProxy } from "./src/app.js";
 
 const PORT = process.env.PORT || 8000;
 
-const server = app.listen(PORT, "27.59.110.208/32", () => {
+const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`API Gateway running on ${PORT}`);
 });
 
