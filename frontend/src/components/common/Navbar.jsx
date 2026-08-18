@@ -73,7 +73,7 @@ export default function Navbar({ userName = "User", notificationCount = 0, role 
           <div className="w-3.5 h-3.5 rounded-full border-2 border-white" />
         </div>
         <div>
-          <span className="text-white font-semibold text-lg">SafeGuard</span>
+          <span className="text-white font-semibold text-lg">Kavach</span>
           <span className="ml-2 text-xs text-zinc-500 bg-zinc-800 px-2 py-0.5 rounded capitalize">
             {role === "admin" ? "Admin Portal" : role === "volunteer" ? "Responder Console" : "Women Safety Platform"}
           </span>
