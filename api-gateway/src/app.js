@@ -104,7 +104,11 @@ app.use("/socket.io", socketProxy);
 app.use("/api/admin", adminProxy);
 
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "API Gateway is running" });
+  res.status(200).json({
+    status: "success",
+    service: "kavach-api-gateway",
+    message: "API Gateway is running",
+  });
 });
 
 export { app, socketProxy };
